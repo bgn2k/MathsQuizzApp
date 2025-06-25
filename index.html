@@ -1,82 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Mental Math Quiz</title>
-    <style>
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, #f8f9fa, #e0f7fa);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-      }
-
-      .container {
-        background: white;
-        padding: 30px 40px;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 500px;
-        text-align: center;
-      }
-
-      h1 {
-        color: #00796b;
-      }
-
-      h2 {
-        color: #333;
-      }
-
-      button {
-        margin: 6px;
-        padding: 12px 20px;
-        font-size: 16px;
-        border: none;
-        border-radius: 8px;
-        background: #00796b;
-        color: white;
-        cursor: pointer;
-        transition: 0.2s ease;
-      }
-
-      button:hover {
-        background: #004d40;
-      }
-
-      input[type="number"] {
-        padding: 10px;
-        font-size: 16px;
-        border: 2px solid #ccc;
-        border-radius: 6px;
-        width: 80%;
-        margin-top: 10px;
-      }
-
-      pre {
-        text-align: left;
-        background: #f0f0f0;
-        padding: 15px;
-        border-radius: 8px;
-        max-height: 300px;
-        overflow-y: auto;
-      }
-
-      #status {
-        margin-top: 10px;
-        color: #d32f2f;
-      }
-    </style>
-  </head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Mental Math Quiz</title>
+        <style>
+          * {
+            box-sizing: border-box;
+          }
+      
+          body {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #f8f9fa, #e0f7fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+          }
+      
+          .container {
+            background: white;
+            padding: 6vw;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+          }
+      
+          h1 {
+            color: #00796b;
+            font-size: 6vw;
+          }
+      
+          h2 {
+            color: #333;
+            font-size: 4.5vw;
+          }
+      
+          button {
+            margin: 5px;
+            padding: 12px 20px;
+            font-size: 4vw;
+            border: none;
+            border-radius: 8px;
+            background: #00796b;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s ease;
+          }
+      
+          button:hover {
+            background: #004d40;
+          }
+      
+          input[type="number"] {
+            padding: 12px;
+            font-size: 4vw;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            width: 80%;
+            margin-top: 10px;
+          }
+      
+          pre {
+            text-align: left;
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 3.5vw;
+          }
+      
+          #status {
+            margin-top: 10px;
+            color: #d32f2f;
+            font-size: 4vw;
+          }
+      
+          /* Responsive font sizes for larger screens */
+          @media (min-width: 768px) {
+            h1 {
+              font-size: 32px;
+            }
+      
+            h2 {
+              font-size: 24px;
+            }
+      
+            button, input[type="number"] {
+              font-size: 18px;
+            }
+      
+            pre {
+              font-size: 14px;
+            }
+      
+            #status {
+              font-size: 16px;
+            }
+          }
+        </style>
+      </head>
+      
   <body>
     <div class="container">
       <h1>Mental Math Quiz</h1>

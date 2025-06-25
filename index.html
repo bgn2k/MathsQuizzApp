@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mental Math Quiz</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #f8f9fa, #e0f7fa);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        background: white;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+      }
+
+      h1 {
+        color: #00796b;
+      }
+
+      h2 {
+        color: #333;
+      }
+
+      button {
+        margin: 6px;
+        padding: 12px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        background: #00796b;
+        color: white;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      button:hover {
+        background: #004d40;
+      }
+
+      input[type="number"] {
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #ccc;
+        border-radius: 6px;
+        width: 80%;
+        margin-top: 10px;
+      }
+
+      pre {
+        text-align: left;
+        background: #f0f0f0;
+        padding: 15px;
+        border-radius: 8px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      #status {
+        margin-top: 10px;
+        color: #d32f2f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Mental Math Quiz</h1>
+
+      <div id="menu">
+        <h2>Choose Operation</h2>
+        <button onclick="selectOperation('Addition')">Addition</button>
+        <!-- <button disabled>Subtraction</button>
+      <button disabled>Multiplication</button>
+      <button disabled>Division</button> -->
+      </div>
+
+      <div id="digit-options" style="display: none">
+        <h2>Select Digit Count</h2>
+        <button onclick="selectDigits(1)">1-digit</button>
+        <button onclick="selectDigits(2)">2-digit</button>
+        <button onclick="selectDigits(3)">3-digit</button>
+        <button onclick="selectDigits(4)">4-digit</button>
+        <button onclick="selectDigits(0)">Random</button>
+      </div>
+
+      <div id="question-options" style="display: none">
+        <h2>Number of Questions</h2>
+        <button onclick="startQuiz(5)">5 Questions</button>
+        <button onclick="startQuiz(10)">10 Questions</button>
+      </div>
+
+      <div id="quiz-area" style="display: none">
+        <h2 id="question"></h2>
+        <form id="answer-form">
+          <input
+            type="number"
+            id="answer"
+            placeholder="Enter answer"
+            autocomplete="off"
+          />
+          <br /><br />
+          <button type="submit">Submit</button>
+        </form>
+        <br />
+        <button onclick="quitQuiz()">Quit</button>
+        <p id="status"></p>
+      </div>
+
+      <div id="result" style="display: none">
+        <h2>Results Summary</h2>
+        <pre id="summary"></pre>
+        <button onclick="startSameQuiz()">Again</button>
+        <button onclick="goBackToMain()">Go Back</button>
+      </div>
+    </div>
+
+    <script>
+      let currentOperation = "";
+      let digitCount = 0;
+      let totalQuestions = 0;
+      let questions = [];
+      let currentIndex = 0;
+      let startTime;
+      let results = [];
+
+      function selectOperation(op) {
+        currentOperation = op;
+        document.getElementById("menu").style.display = "none";
+        document.getElementById("digit-options").style.display = "block";
+      }
+
+      function selectDigits(digits) {
+        digitCount = digits;
+        document.getElementById("digit-options").style.display = "none";
+        document.getElementById("question-options").style.display = "block";
+      }
+
+      function startQuiz(count) {
+        totalQuestions = count;
+        generateQuestions();
+        document.getElementById("question-options").style.display = "none";
+        document.getElementById("quiz-area").style.display = "block";
+        document.getElementById("result").style.display = "none";
+        currentIndex = 0;
+        results = [];
+        showQuestion();
+      }
+
+      function generateQuestions() {
+        questions = [];
+        for (let i = 0; i < totalQuestions; i++) {
+          const a = getRandom(digitCount);
+          const b = getRandom(digitCount);
+          questions.push({ a, b });
+        }
+      }
+
+      function getRandom(digits) {
+        let min, max;
+
+        if (digits === 0) {
+          digits = Math.floor(Math.random() * 4) + 1; // pick random digit count
+        }
+
+        // Normal range
+        min = Math.pow(10, digits - 1);
+        max = Math.pow(10, digits) - 1;
+
+        // Boost difficulty: skew towards upper end
+        const skewFactor = 0.8 + Math.random() * 0.2; // 80–100% of max range
+        const range = max - min;
+        const hardMin = min + Math.floor(range * 0.7); // upper 30% of the range
+        const hardMax = max;
+
+        return Math.floor(Math.random() * (hardMax - hardMin + 1)) + hardMin;
+      }
+
+      function showQuestion() {
+        if (currentIndex >= questions.length) {
+          showSummary();
+          return;
+        }
+        const q = questions[currentIndex];
+        document.getElementById("question").innerText = `Q${
+          currentIndex + 1
+        }: What is ${q.a} + ${q.b}?`;
+        document.getElementById("answer").value = "";
+        document.getElementById("answer").focus();
+        document.getElementById("status").innerText = "";
+        startTime = performance.now();
+      }
+
+      function submitAnswer(e) {
+        e.preventDefault();
+        const input = document.getElementById("answer").value;
+        if (input === "") return;
+
+        const endTime = performance.now();
+        const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+        const userAnswer = parseInt(input);
+        const { a, b } = questions[currentIndex];
+        const correct = a + b;
+
+        results.push({
+          question: `${a} + ${b}`,
+          userAnswer,
+          correctAnswer: correct,
+          isCorrect: userAnswer === correct,
+          timeTaken,
+        });
+
+        currentIndex++;
+        showQuestion();
+      }
+
+      function quitQuiz() {
+        showSummary();
+      }
+
+      function showSummary() {
+        document.getElementById("quiz-area").style.display = "none";
+        document.getElementById("result").style.display = "block";
+
+        let correctCount = results.filter((r) => r.isCorrect).length;
+        let summaryText = `Answered: ${
+          results.length
+        }\nCorrect: ${correctCount}\nWrong: ${
+          results.length - correctCount
+        }\n\n`;
+
+        results.forEach((r, i) => {
+          summaryText += `Q${i + 1}: ${r.question} = ${r.userAnswer} ${
+            r.isCorrect ? "✅" : "❌"
+          }\n`;
+          if (!r.isCorrect) {
+            summaryText += `   ➤ Correct: ${r.correctAnswer}\n`;
+          }
+          summaryText += `   ➤ Time: ${r.timeTaken}s\n\n`;
+        });
+
+        document.getElementById("summary").textContent = summaryText;
+      }
+
+      function startSameQuiz() {
+        currentIndex = 0;
+        results = [];
+        generateQuestions();
+        document.getElementById("result").style.display = "none";
+        document.getElementById("quiz-area").style.display = "block";
+        showQuestion();
+      }
+
+      function goBackToMain() {
+        document.getElementById("result").style.display = "none";
+        document.getElementById("menu").style.display = "block";
+      }
+
+      document
+        .getElementById("answer-form")
+        .addEventListener("submit", submitAnswer);
+    </script>
+  </body>
+</html>
